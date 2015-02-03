@@ -5,13 +5,61 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
         
+        <style>
+            .d3-tip {
+                line-height: 1;
+                font-weight: bold;
+                padding: 12px;
+                background: rgba(0, 0, 0, 0.8);
+                color: #fff;
+                border-radius: 2px;
+            }
+            path {
+                stroke: steelblue;
+                stroke-width: 3;
+                fill: none;
+            }
+            .axis path, .axis line {
+                fill: none;
+                stroke: #000;
+                shape-rendering: crispEdges;
+            }
+            .datapoint:hover{
+                fill: steelblue;
+            }
+            .xlabel, .ylabel {
+                font-weight:bold;
+                font-size:20px;
+            }
+            
+            #graph {
+                width: 600px;
+                margin: 0 auto;
+            }
+        </style>
+
+        
         <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
         <script src="http://d3js.org/d3.v3.js"></script>
+        <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
         <script src="https://cdn.socket.io/socket.io-1.3.2.js"></script>
         
+        <script src="/js/graph.js"></script>
         <script type="text/javascript">
-            $(document).ready(function() {
+            //manage data
+            var measurements = [];
+            function update() {
+                var table = d3.select("#data-table").selectAll("tr");
+                var row = table.data(measurements);
+                row.enter()
+                    .append("tr")
+                    .append("td")
+                    .text(function(d) { return d;});
+                row.exit().remove();
+            }
+            
+            $(document).ready(function() {                
                 //setup socket.io
                 var socket = io.connect('http://localhost/');
                 socket.on('status', function (data) {
@@ -21,11 +69,23 @@
                 socket.on('result', function(data) {
                     console.log('result:' + data.result);
                     $("#measurement").html(data.result);
+                    measurements.push({
+                        measurement: data.result,
+                        date: new Date()
+                    });
+                    graph.update(measurements);
+                    console.log(measurements);
                 });
-                
+
+                graph.init("#graph", measurements);
+               
                 $("#measure").click(function() {
                     socket.emit('measure', {});
                     $("#measurement").empty();
+                });
+                $("#reset").click(function() {
+                    measurements = [];
+                    graph.update(measurements);
                 });
             });
         </script>
@@ -36,14 +96,16 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
+                <table id="data-table" style="display:none">
+                </table>
                 <p class="text-center">
+                    <br>
                     <span id="status"></span><br>
-                    <span id="measurement"></span>
-                    <br>
-                    <br>
+                    <span id="measurement"></span><br>
                     <button id="measure" type="button" class="btn btn-success">Measure</button>
                     <button id="reset" type="button" class="btn btn-default">Reset</button>
                 </p>
+                <div id="graph"></div>
             </div>
           </div>
         </div>

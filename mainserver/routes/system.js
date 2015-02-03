@@ -34,11 +34,8 @@ io.on('connection', function (socket) {
             res.on('data', function(chunk) {
                 total += chunk.length;
                 data.push(chunk);
-                console.log(chunk);
             });
             res.on('end', function() {
-                //var result = JSON.parse(data.join());
-                console.log("Final result:");
                 console.log(data.join());
             });
         });
