@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+        <link rel="stylesheet" type="text/css" href="css/colorimetry.css">
+
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+        
+        <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+        <script src="http://d3js.org/d3.v3.js"></script>
+        <script src="https://cdn.socket.io/socket.io-1.3.2.js"></script>
+        
+        <script type="text/javascript">
+            $(document).ready(function() {
+                //setup socket.io
+                var socket = io.connect('http://localhost/');
+                socket.on('status', function (data) {
+                    console.log('status:' + data.status);
+                    $("#status").html('Status:' + data.status);
+                });
+                socket.on('result', function(data) {
+                    console.log('result:' + data.result);
+                    $("#measurement").html(data.result);
+                });
+                
+                $("#measure").click(function() {
+                    socket.emit('measure', {});
+                    $("#measurement").empty();
+                });
+            });
+        </script>
+    <head>
+        <title>pH Colorimetry System</title>
+    </head>
+    <body>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+                <p class="text-center">
+                    <span id="status"></span><br>
+                    <span id="measurement"></span>
+                    <br>
+                    <br>
+                    <button id="measure" type="button" class="btn btn-success">Measure</button>
+                    <button id="reset" type="button" class="btn btn-default">Reset</button>
+                </p>
+            </div>
+          </div>
+        </div>
+    </body>
+</html>
