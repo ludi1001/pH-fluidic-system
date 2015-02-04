@@ -3,7 +3,7 @@ var graph = (function() {
     var selector;
     
     // Set the dimensions of the canvas / graph
-    var margin = {top: 30, right: 20, bottom: 30, left: 50},
+    var margin = {top: 30, right: 20, bottom: 40, left: 50},
         width = 600 - margin.left - margin.right,
         height = 270 - margin.top - margin.bottom;
 
@@ -60,11 +60,27 @@ var graph = (function() {
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
             .call(xAxis);
+            
+        svg.append("text")
+          .attr("class", "xlabel")
+          .attr("text-anchor", "middle")
+          .attr("x", width / 2)
+          .attr("y", height + margin.bottom)
+          .text("Measurement Time");
 
         // Add the Y Axis
         svg.append("g")
             .attr("class", "y axis")
             .call(yAxis);
+            
+        svg.append("text")
+          .attr("class", "ylabel")
+          .attr("y", 0 - margin.left) // x and y switched due to rotation!!
+          .attr("x", 0 - (height / 2))
+          .attr("dy", "1em")
+          .attr("transform", "rotate(-90)")
+          .style("text-anchor", "middle")
+          .text("pH");
             
         //Mouseover tip
         svg.call(tip);
