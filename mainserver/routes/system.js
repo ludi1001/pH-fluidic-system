@@ -27,7 +27,7 @@ io.on('connection', function (socket) {
   
     socket.on('measure', function (data) {
         console.log('measuring started');
-        http.get('http://10.190.211.14/arduino/measure', function handle(res) {
+        http.get('http://10.190.86.235/arduino/measure', function handle(res) {
             res.setEncoding('utf8');
             var total = 0;
             var data = [];
