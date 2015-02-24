@@ -5,7 +5,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 n = 1.35
-R1 = 5
+R1 = 1.3/2
 R2 = -R1
 d = 2*R1
 
@@ -17,7 +17,7 @@ h1 = -f * (n - 1) * d / (R2 * n)
 h2 = -f * (n - 1) * d / (R1 * n)
 print("Front principal plane: {0}".format(h1))
 print("Back principal plane: {0}".format(h2))
-d0 = np.linspace(14, 21)
+d0 = np.linspace(0, 5)
 s0 = d0 + h1
 s1 = (f * s0) /  (s0 - f)
 d1 = s1 + h2

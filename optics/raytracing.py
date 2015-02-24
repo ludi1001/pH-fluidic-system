@@ -4,8 +4,9 @@ import scipy.optimize
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-R = 5
+R = 1.3/2
 n = 1.35
+shift = 0#-.75 - R
 
 def intersect_circle(alpha, x0, y0, R):
     a = 1 + np.tan(alpha)**2
@@ -34,16 +35,26 @@ def refract(alpha, x0, y0, ni, nt):
     theta_t = np.arcsin(ni * np.sin(theta_i) / nt)
     print("theta_t {0}".format(theta_t/np.pi*180))
     print("alpha {0}".format(alpha/np.pi*180))
-    alpha_new = theta_t - theta_i + alpha
-    if alpha < 0:
-        alpha_new = alpha - (theta_t - theta_i)
+    vec0 = ni * np.cross(ray_inc, normal)
+    print("ray_inc x normal {0}".format(vec0))
+    alpha_new1 = theta_t - theta_i + alpha
+    vec1a = nt * np.cross([1, np.tan(alpha_new1)]/(1 + np.tan(alpha_new1)**2), normal)
+    alpha_new2 = alpha - (theta_t - theta_i)
+    vec1b = nt * np.cross([1, np.tan(alpha_new2)]/(1 + np.tan(alpha_new2)**2), normal)
+    print("ray_trans x normal {0}, {1}".format(vec1a, vec1b))
+    if np.abs(vec1a - vec0) < .01:
+        alpha_new = alpha_new1
+    elif np.abs(vec1b - vec0) < .01:
+        alpha_new = alpha_new2
+    else:
+        print("error raytracing")
     return (alpha_new, x0, y0)
     
 def plot_segment(x0, y0, x1, y2, alpha, color='b-'):
     beta = np.linspace(0, 1)
     x = beta * x0 + (1 - beta) * x1
     y = np.tan(alpha) * (x - x0) + y0
-    plt.plot(x, y, color)
+    plt.plot(x - shift, y, color)
 
 def raytrace(alpha, x0, y0, color='b-'):
     #plot ray 1
@@ -66,17 +77,14 @@ def raytrace(alpha, x0, y0, color='b-'):
     plot_segment(x2, y2, x3, y3, alpha2, color)
 
 
-x0 = -20
+x0 = -.75 - R
 y0 = 0  
 
-"""
-#raytrace(.2, x0, y0)
-raytrace(.05, x0, y0)
-raytrace(.01, x0, y0)
-raytrace(.1, x0, y0)
-raytrace(.02, x0, y0)
-raytrace(.03, x0, y0)
-"""
+raytrace(1/180*np.pi, x0, y0)
+raytrace(3/180*np.pi, x0, y0)
+raytrace(5/180*np.pi, x0, y0)
+raytrace(10/180*np.pi, x0, y0)
+
 
 y0 = .2
 """
@@ -92,7 +100,7 @@ raytrace(.02, x0, y0, 'g-')
 raytrace(.03, x0, y0, 'g-')
 raytrace(0, x0, y0, 'g-')
 """
-
+"""
 alpha = .03
 raytrace(alpha, x0, 0, 'k-')
 raytrace(alpha, x0, .1, 'k-')
@@ -100,17 +108,18 @@ raytrace(alpha, x0, .2, 'k-')
 raytrace(alpha, x0, .3, 'k-')
 raytrace(alpha, x0, .4, 'k-')
 
-alpha = -.03
+alpha = 0
 raytrace(alpha, x0, 0, 'k-')
 raytrace(alpha, x0, .1, 'k-')
 raytrace(alpha, x0, .2, 'k-')
 raytrace(alpha, x0, .3, 'k-')
 raytrace(alpha, x0, .4, 'k-')
+"""
 
 
 #plot lens
 phi = np.linspace(0, 2 * np.pi)
-plt.plot(R*np.cos(phi), R*np.sin(phi), 'r-')
+plt.plot(R*np.cos(phi) - shift, R*np.sin(phi), 'r-')
   
 plt.grid(b=True, which='major', color='k', linestyle='--')
 plt.show()
