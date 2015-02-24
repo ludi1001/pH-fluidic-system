@@ -4,9 +4,11 @@ import scipy.optimize
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-R = 1.3/2
+R = 1#1.3/2
 n = 1.35
 shift = 0#-.75 - R
+last_x = 5
+old = False
 
 def intersect_circle(alpha, x0, y0, R):
     a = 1 + np.tan(alpha)**2
@@ -28,26 +30,39 @@ def refract(alpha, x0, y0, ni, nt):
     normal /= np.linalg.norm(normal)
     print(ray_inc)
     print(normal)
-    theta_i = np.arccos(np.dot(ray_inc, normal))
-    if theta_i > np.pi/2:
-        theta_i = np.pi - theta_i
-    print("theta_i {0}".format(theta_i/np.pi*180))
-    theta_t = np.arcsin(ni * np.sin(theta_i) / nt)
-    print("theta_t {0}".format(theta_t/np.pi*180))
-    print("alpha {0}".format(alpha/np.pi*180))
-    vec0 = ni * np.cross(ray_inc, normal)
-    print("ray_inc x normal {0}".format(vec0))
-    alpha_new1 = theta_t - theta_i + alpha
-    vec1a = nt * np.cross([1, np.tan(alpha_new1)]/(1 + np.tan(alpha_new1)**2), normal)
-    alpha_new2 = alpha - (theta_t - theta_i)
-    vec1b = nt * np.cross([1, np.tan(alpha_new2)]/(1 + np.tan(alpha_new2)**2), normal)
-    print("ray_trans x normal {0}, {1}".format(vec1a, vec1b))
-    if np.abs(vec1a - vec0) < .01:
-        alpha_new = alpha_new1
-    elif np.abs(vec1b - vec0) < .01:
-        alpha_new = alpha_new2
-    else:
-        print("error raytracing")
+    
+    if old:
+        theta_i = np.arccos(np.dot(ray_inc, normal))
+        if theta_i > np.pi/2:
+            theta_i = np.pi - theta_i
+        print("theta_i {0}".format(theta_i/np.pi*180))
+        theta_t = np.arcsin(ni * np.sin(theta_i) / nt)
+        print("theta_t {0}".format(theta_t/np.pi*180))
+        print("alpha {0}".format(alpha/np.pi*180))
+        vec0 = ni * np.cross(ray_inc, normal)
+        print("ray_inc x normal {0}".format(vec0))
+        alpha_new1 = theta_t - theta_i + alpha
+        vec1a = nt * np.cross([1, np.tan(alpha_new1)]/(1 + np.tan(alpha_new1)**2), normal)
+        alpha_new2 = alpha - (theta_t - theta_i)
+        vec1b = nt * np.cross([1, np.tan(alpha_new2)]/(1 + np.tan(alpha_new2)**2), normal)
+        print("ray_trans x normal {0}, {1}".format(vec1a, vec1b))
+        if np.abs(vec1a - vec0) < np.abs(vec1b - vec0):
+            alpha_new = alpha_new1
+        else:
+            alpha_new = alpha_new2
+        if np.amin([np.abs(vec1a - vec0),  np.abs(vec1b - vec0)]) > .01:
+            print("warning raytracing")
+        
+    else: 
+        ray_inc_3 = np.array([ray_inc[0], ray_inc[1], 0])
+        normal_3 = np.array([normal[0], normal[1], 0])
+        if np.dot(ray_inc, normal) > 0:
+            normal_3 = -normal_3
+        kt = ni/nt*np.cross(normal_3, np.cross(-1*normal_3, ray_inc_3)) - normal_3 * np.sqrt(1 - (ni/nt)**2 * np.linalg.norm(np.cross(normal_3, ray_inc_3))**2)
+        print("{0} {1} {2}".format(kt, np.arctan2(kt[1], kt[0]), nt*np.cross([kt[0], kt[1]], normal)))
+        alpha_new = np.arctan2(kt[1], kt[0])
+        print("ni * ki x normal {0}".format(ni * np.cross(ray_inc, normal)))
+        print("nt * kt x normal {0}".format(nt*np.cross([kt[0], kt[1]], normal)))
     return (alpha_new, x0, y0)
     
 def plot_segment(x0, y0, x1, y2, alpha, color='b-'):
@@ -59,6 +74,11 @@ def plot_segment(x0, y0, x1, y2, alpha, color='b-'):
 def raytrace(alpha, x0, y0, color='b-'):
     #plot ray 1
     x1 = np.amin(intersect_circle(alpha, x0, y0, R))
+    if x1 is None:
+        x1 = last_x
+        y1 = np.tan(alpha) * (x1 - x0) + y0
+        plot_segment(x0, y0, x1, y1, alpha, color)
+        return
     y1 = np.tan(alpha) * (x1 - x0) + y0
     plot_segment(x0, y0, x1, y1, alpha, color)
 
@@ -72,34 +92,41 @@ def raytrace(alpha, x0, y0, color='b-'):
     #plot ray 3
     alpha2, *c = refract(alpha1, x2, y2, n, 1)
     print(alpha2)
-    x3 = 20
+    x3 = last_x
     y3 = np.tan(alpha2) * (x3 - x2) + y2
     plot_segment(x2, y2, x3, y3, alpha2, color)
 
 
-x0 = -.75 - R
+x0 = -2.4 - R
 y0 = 0  
 
 raytrace(1/180*np.pi, x0, y0)
 raytrace(3/180*np.pi, x0, y0)
 raytrace(5/180*np.pi, x0, y0)
 raytrace(10/180*np.pi, x0, y0)
+raytrace(18/180*np.pi, x0, y0)
 
+"""
+old = True
+raytrace(3/180*np.pi, x0, y0, 'r-')
+raytrace(5/180*np.pi, x0, y0, 'r-')
+raytrace(10/180*np.pi, x0, y0, 'r-')
+raytrace(18/180*np.pi, x0, y0, 'r-')
+"""
 
 y0 = .2
 """
 raytrace(-.05, x0, y0, 'g-')
 raytrace(-.01, x0, y0, 'g-')
-#raytrace(-.1, x0, y0, 'g-')
-raytrace(-.02, x0, y0, 'g-')
+raytrace(-.1, x0, y0, 'g-')
 raytrace(-.03, x0, y0, 'g-')
+raytrace(.1, x0, y0, 'g-')
 raytrace(.05, x0, y0, 'g-')
 raytrace(.01, x0, y0, 'g-')
-#raytrace(.1, x0, y0, 'g-')
-raytrace(.02, x0, y0, 'g-')
 raytrace(.03, x0, y0, 'g-')
 raytrace(0, x0, y0, 'g-')
 """
+
 """
 alpha = .03
 raytrace(alpha, x0, 0, 'k-')
