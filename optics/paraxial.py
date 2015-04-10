@@ -22,4 +22,6 @@ s0 = d0 + h1
 s1 = (f * s0) /  (s0 - f)
 d1 = s1 + h2
 plt.plot(d0, d1, 'r-o')
+plt.xlabel('Object location (cm)')
+plt.ylabel('Image location (cm)')
 plt.show()

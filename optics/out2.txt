@@ -1,0 +1,204 @@
+Test using 30 mL water with 3 mL phenol red
+LED placed 2 cm away from chamber and detector 4 cm away
+Base reading: 60
+
+Placed scotch tape around red LED to decrease light.
+With red LED, at 1.8 V/8 mA, reads 1020
+With red LED, at 1.7 V/2 mA, reads 130
+
+Adding another 3 mL of phenol red to increase red absorbance.
+Base reading: 40
+With red LED, at 1.8V/8 mA, reads 1014
+With red LED, at 1.7V/2 mA, reads 120
+With blue LED, at 3V/12 mA, reads 123
+With blue LED, at 3.1V/17 mA, reads 150
+With blue LED, at, 3.2V/24 mA, reads 160
+
+Base reading: 60
+With green LED, at 3V/26 mA, reads 200
+With green LED, at 3.1V/35 mA, reads 222
+With green LED, at 2.9V/21 mA, reads 174
+
+Taking off scotch tape again,
+Base reading: 60
+With green LED, at 2.9V/19 mA, reads 305
+With green LED, at 3V/26 mA, reads 355
+With green LED, at 3.1V/34 mA, reads 410
+
+Base reading: 50
+With blue LED, at 3.0V/12 mA, reads 155
+With blue LED, at 3.1V/17 mA, reads 182
+With blue LED, at 3.2V/24 mA, reads 217
+With blue LED, at 3.3V/31 mA, reads  256
+
+Same setup but at night
+Baseline: 1
+Red, 1.8V/9mA: 1020
+Blue, 3.2V/27mA: 64
+Green, 2.9V/22mA: 145
+
+Adding ~1mL .1% NaOH
+Baseline: 1
+Green, 2.9V/20mA: 93
+Blue, 3.2V/25mA: 58
+Red, 1.8V/9mA: 1020
+
+
+
+
+Resistor Values
+Red: 510
+Green: 1K
+Blue: 2K
+14 mL sample, 3 drops phenol red
+
+
+
+Water
+
+Red
+Mean: 573.9795918367347, Std: 2.2586775606975587, Num: 98
+
+
+
+Green
+Mean: 714.625, Std: 1.1402475492998048, Num: 152
+
+
+
+Blue
+Mean: 734.5694444444445, Std: 8.030888958834868, Num: 72
+
+
+
+Background
+Mean: 5.888888888888889, Std: 0.9362388636862619, Num: 36
+
+7.18
+
+Red
+Mean: 573.5217391304348, Std: 2.4648761361840634, Num: 23
+
+
+Green
+
+Mean: 437.95, Std: 0.8645808232895291, Num: 40
+
+Blue
+Mean: 297.8536585365854, Std: 2.1018107827132217, Num: 41
+
+7.78
+
+Red
+Mean: 566.6224489795918, Std: 2.496999448817905, Num: 98
+
+
+Green
+Mean: 397.16129032258067, Std: 1.0805247886738207, Num: 31
+
+Blue
+Mean: 237.3409090909091, Std: 1.820878681723118, Num: 88
+
+Water
+
+Red
+Mean: 576.0588235294117, Std: 2.721820070884535, Num: 34
+
+Green
+Mean: 698.1020408163265, Std: 1.3285698611232484, Num: 49
+
+Blue
+Mean: 712.5, Std: 4.2784992176644785, Num: 36
+
+7.0
+Red
+Mean: 567.6037735849056, Std: 2.6302996646950123, Num: 53
+
+Green
+Mean: 402.30645161290323, Std: 0.9433760526380494, Num: 62
+
+Blue
+Mean: 295.92105263157896, Std: 1.9518085937672276, Num: 38
+
+Water
+Red
+Mean: 574.974358974359, Std: 2.6553012237947944, Num: 39
+
+Green
+Mean: 704.6595744680851, Std: 0.8818885862154341, Num: 47
+
+Blue
+Mean: 726.6122448979592, Std: 5.550570209835264, Num: 49
+
+6.0
+
+Red
+Mean: 576.4102564102565, Std: 2.518831115947243, Num: 39
+
+Green
+Mean: 511.57575757575756, Std: 0.9544251968499163, Num: 33
+
+Blue
+Mean: 287.125, Std: 2.1701094442446904, Num: 40
+
+Water
+Red
+Mean: 578.3243243243244, Std: 3.013967969610952, Num: 37
+
+Green
+Mean: 692.2698412698413, Std: 0.8945398605463732, Num: 63
+
+Blue
+Mean: 689.625, Std: 4.328322423295196, Num: 16
+
+Fresh water
+Mean: 560.7575757575758, Std: 2.462202795851137, Num: 33
+
+Green
+Mean: 726.8571428571429, Std: 1.355261854357877, Num: 42
+
+Blue
+Mean: 759.08, Std: 5.69153757784309, Num: 50
+
+6.5
+Red
+Mean: 584.25, Std: 2.1978073488950627, Num: 28
+
+Green
+Mean: 548.7, Std: 0.9363047936792092, Num: 30
+
+
+
+Blue
+Mean: 310.7368421052632, Std: 3.0147375771830927, Num: 38
+6.5 again after flushing
+Red
+Mean: 587.25, Std: 3.031088913245535, Num: 28
+
+Green
+Mean: 541.2333333333333, Std: 0.8034647195462634, Num: 30
+
+Blue
+Mean: 288.59375, Std: 2.793512294137973, Num: 32
+
+6.5 with 6 drops of phenol red
+Red
+Mean: 584.7647058823529, Std: 2.501671874646387, Num: 51
+
+Green
+Mean: 393.5416666666667, Std: 0.7626252174051302, Num: 24
+
+Blue
+Mean: 137.21428571428572, Std: 1.4886189554610083, Num: 42
+
+
+
+
+
+
+
+
+
+
+
+

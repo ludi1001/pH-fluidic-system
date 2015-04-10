@@ -96,15 +96,27 @@ def raytrace(alpha, x0, y0, color='b-'):
     y3 = np.tan(alpha2) * (x3 - x2) + y2
     plot_segment(x2, y2, x3, y3, alpha2, color)
 
-
-x0 = -2.4 - R
+def raytrace_angles(angles, x0, y0, color='b-'):
+    for angle in angles:
+        raytrace(angle/180*np.pi, x0, y0, color)
+        
+x0 = -2 - R
 y0 = 0  
 
-raytrace(1/180*np.pi, x0, y0)
-raytrace(3/180*np.pi, x0, y0)
-raytrace(5/180*np.pi, x0, y0)
-raytrace(10/180*np.pi, x0, y0)
-raytrace(18/180*np.pi, x0, y0)
+"""
+# Chromatic Aberration
+n = 1.33141
+raytrace_angles(range(-18, 19, 4), x0, y0, 'r-')
+n = 1.34235
+raytrace_angles(range(-18, 19, 4), x0, y0, 'b-')
+"""
+
+"""Spherical Aberration
+raytrace_angles(range(-18, 19, 2), x0, y0, 'b-')
+"""
+
+raytrace_angles(range(-4,17,2), x0, y0, 'b-')
+#raytrace_angles(range(-10,11,2), x0, y0, 'r-')
 
 """
 old = True
@@ -134,16 +146,22 @@ raytrace(alpha, x0, .1, 'k-')
 raytrace(alpha, x0, .2, 'k-')
 raytrace(alpha, x0, .3, 'k-')
 raytrace(alpha, x0, .4, 'k-')
-
-alpha = 0
-raytrace(alpha, x0, 0, 'k-')
-raytrace(alpha, x0, .1, 'k-')
-raytrace(alpha, x0, .2, 'k-')
-raytrace(alpha, x0, .3, 'k-')
-raytrace(alpha, x0, .4, 'k-')
 """
 
+"""
+alpha = 0
+raytrace(alpha, x0, 0, 'r-')
+raytrace(alpha, x0, .1, 'r-')
+raytrace(alpha, x0, .2, 'r-')
+raytrace(alpha, x0, .3, 'r-')
+raytrace(alpha, x0, .4, 'r-')
+raytrace(alpha, x0, -.1, 'r-')
+raytrace(alpha, x0, -.2, 'r-')
+raytrace(alpha, x0, -.3, 'r-')
+raytrace(alpha, x0, -.4, 'r-')
+"""
 
+plt.axis([-3,5,-1,1])
 #plot lens
 phi = np.linspace(0, 2 * np.pi)
 plt.plot(R*np.cos(phi) - shift, R*np.sin(phi), 'r-')
