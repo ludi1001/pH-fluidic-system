@@ -63,7 +63,7 @@
             
             $(document).ready(function() {                
                 //setup socket.io
-                var socket = io.connect('http://10.190.85.95/');
+                var socket = io.connect('http://' + location.host);
                 socket.on('status', function (data) {
                     console.log('status:' + data.status);
                     $("#status").html('Status: ' + data.status);

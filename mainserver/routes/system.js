@@ -22,12 +22,15 @@ router.get('/result/:result', function(req, res) {
     res.json(result);
 });
 
+var arduinoIP = process.argv[2];
+console.log('Arduino IP: ' + arduinoIP);
+
 io.on('connection', function (socket) {
     socket.emit('status', system);
   
     socket.on('measure', function (data) {
         console.log('measuring started');
-        http.get('http://10.190.86.235/arduino/measure', function handle(res) {
+        http.get('http://' + arduinoIP + '/arduino/measure', function handle(res) {
             res.setEncoding('utf8');
             var total = 0;
             var data = [];
@@ -38,6 +41,9 @@ io.on('connection', function (socket) {
             res.on('end', function() {
                 console.log(data.join());
             });
+        }).on('error', function(e) {
+            console.log("Arduino YUN request error: " + e);
+            socket.emit('status', {'status':'Arduino communication error'});
         });
     });
 });
