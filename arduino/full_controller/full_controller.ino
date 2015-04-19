@@ -9,7 +9,7 @@
 #define VALVE_REAGENT A4
 #define VALVE_WATER   A3
 
-#define TRIALS 3
+#define TRIALS 1
 
 AF_DCMotor sampleMotor(1, MOTOR12_64KHZ);
 AF_DCMotor reagentMotor(2, MOTOR12_64KHZ); // create motor #2, 64KHz pwm
@@ -32,12 +32,12 @@ void Valve::init() {
 
 void Valve::open() {
   digitalWrite(pin, HIGH);
-  delay(500);
+  delay(2000);
 }
 
 void Valve::close() {
   digitalWrite(pin, LOW);
-  delay(200);
+  delay(1000);
 }
 
 Valve valveReagent(VALVE_REAGENT);
@@ -47,9 +47,9 @@ void setup() {
   Serial.begin(9600); // set up Serial library at 9600 bps
 
   //setup motors
-  sampleMotor.setSpeed(200); // set the speed to 200/255
-  reagentMotor.setSpeed(200);
-  drainMotor.setSpeed(200);
+  sampleMotor.setSpeed(120); // set the speed to 200/255
+  reagentMotor.setSpeed(120);
+  drainMotor.setSpeed(255);
   
   //setup LEDs
   pinMode(RED, OUTPUT);
@@ -217,7 +217,13 @@ void loop() {
       Serial.print("Sequence chosen: ");
       Serial.println(seq);
       if(!confirm()) return;
-      
+      if(seq == 0) {
+        Serial.println("Initiating full sequence...");
+        doMeasure();
+      }
+      else {
+        Serial.println("undefined sequence");
+      }
     }
     else if(c == 't') {
       int val = analogRead(MEASURE);
@@ -250,36 +256,81 @@ double doRead(int samples) {
   return avg;
 }
 
+void doColorimetry() {
+      digitalWrite(RED, HIGH);
+      digitalWrite(GREEN, LOW);
+      digitalWrite(BLUE, LOW);
+      delay(500);
+      double red = doRead(NUM_SAMPLES);
+      
+      digitalWrite(RED, LOW);
+      digitalWrite(GREEN, HIGH);
+      digitalWrite(BLUE, LOW);
+      delay(500);
+      double green = doRead(NUM_SAMPLES);
+      
+      digitalWrite(RED, LOW);
+      digitalWrite(GREEN, LOW);
+      digitalWrite(BLUE, HIGH);
+      delay(500);
+      double blue = doRead(NUM_SAMPLES);
+      
+      digitalWrite(RED, LOW);
+      digitalWrite(GREEN, LOW);
+      digitalWrite(BLUE, LOW);
+      delay(500);
+      double background = doRead(NUM_SAMPLES);
+      
+      String str = "back: ";
+      str = str + background + ", R: " + red + ", G: " + green + ", B: " + blue;
+      Serial.println(str);
+}
+
+#define PAUSE(x) { Serial.println(x); if(!confirm()) return; }
 void doMeasure() {
+  PAUSE("Filling sample tube...");
   fillSampleTube();
   for(int i = 0; i < TRIALS; ++i) {
+    PAUSE("Filling reagent tube...");
     fillReagentTube();
+    PAUSE("Pumping sample and reagent...");
     pumpSample();
-    //doRead();
-    drain(45000);
+    PAUSE("Doing reading...");
+    doColorimetry();
+    PAUSE("Emptying reagent tube...");
+    emptyReagentTube();
+    
     if(i == TRIALS - 1) {
+      PAUSE("Emptying sample tube...");
       emptySampleTube();
     }
+    PAUSE("Draining...");
+    drain(48000);
+    PAUSE("Flusing with water...");
     flushWater();
-    drain(45000);
+    PAUSE("Emptying reagent tube...");
+    emptyReagentTube();
+    PAUSE("Draining...");
+    drain(48000);
   }
+  Serial.println("DONE");
 }
 
 void pumpSample() {
   //pump reagent first
   valveReagent.open();
   reagentMotor.run(FORWARD);
-  delay(9500);
+  delay(19000);
   reagentMotor.run(RELEASE);
   valveReagent.close();
   
   //pump sample in
   sampleMotor.run(FORWARD);
-  delay(30000);
+  delay(45000);
   sampleMotor.run(RELEASE);
 }
 
-void drain(int drainTime) {
+void drain(long drainTime) {
   drainMotor.run(FORWARD);
   delay(drainTime);
   drainMotor.run(RELEASE);
@@ -289,19 +340,21 @@ void drain(int drainTime) {
 void fillReagentTube() {
   valveReagent.open();
   reagentMotor.run(FORWARD);
-  delay(10000);
+  delay(8750);
   reagentMotor.run(RELEASE);
   valveReagent.close();
 }
 
 void emptyReagentTube() {
   reagentMotor.run(FORWARD);
-  delay(13000);
+  delay(8000);
   reagentMotor.run(RELEASE);
 }
 
 void fillSampleTube() {
-  emptySampleTube();
+  sampleMotor.run(FORWARD);
+  delay(11000);
+  sampleMotor.run(RELEASE);
 }
 
 void emptySampleTube() {
@@ -311,9 +364,11 @@ void emptySampleTube() {
 }
 
 void flushWater() {
+  reagentMotor.setSpeed(255);
   valveWater.open();
   reagentMotor.run(FORWARD);
-  delay(30000);
+  delay(20000);
   reagentMotor.run(RELEASE);
   valveWater.close();
+  reagentMotor.setSpeed(120);
 }
