@@ -47,7 +47,7 @@ void setup() {
   Serial.begin(9600); // set up Serial library at 9600 bps
 
   //setup motors
-  sampleMotor.setSpeed(120); // set the speed to 200/255
+  sampleMotor.setSpeed(255); // set the speed to 200/255
   reagentMotor.setSpeed(120);
   drainMotor.setSpeed(255);
   
@@ -293,12 +293,13 @@ void doMeasure() {
   for(int i = 0; i < TRIALS; ++i) {
     PAUSE("Filling reagent tube...");
     fillReagentTube();
+    drain(15000);
     PAUSE("Pumping sample and reagent...");
     pumpSample();
     PAUSE("Doing reading...");
     doColorimetry();
     PAUSE("Emptying reagent tube...");
-    emptyReagentTube();
+    //emptyReagentTube();
     
     if(i == TRIALS - 1) {
       PAUSE("Emptying sample tube...");
@@ -309,9 +310,9 @@ void doMeasure() {
     PAUSE("Flusing with water...");
     flushWater();
     PAUSE("Emptying reagent tube...");
-    emptyReagentTube();
+    //emptyReagentTube();
     PAUSE("Draining...");
-    drain(48000);
+    drain(45000);
   }
   Serial.println("DONE");
 }
@@ -340,20 +341,20 @@ void drain(long drainTime) {
 void fillReagentTube() {
   valveReagent.open();
   reagentMotor.run(FORWARD);
-  delay(8750);
+  delay(9400);
   reagentMotor.run(RELEASE);
   valveReagent.close();
 }
 
 void emptyReagentTube() {
   reagentMotor.run(FORWARD);
-  delay(8000);
+  delay(9750);
   reagentMotor.run(RELEASE);
 }
 
 void fillSampleTube() {
   sampleMotor.run(FORWARD);
-  delay(11000);
+  delay(14000);
   sampleMotor.run(RELEASE);
 }
 
@@ -367,7 +368,7 @@ void flushWater() {
   reagentMotor.setSpeed(255);
   valveWater.open();
   reagentMotor.run(FORWARD);
-  delay(20000);
+  delay(30000);
   reagentMotor.run(RELEASE);
   valveWater.close();
   reagentMotor.setSpeed(120);
